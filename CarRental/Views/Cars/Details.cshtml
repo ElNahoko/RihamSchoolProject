@@ -1,0 +1,25 @@
+﻿@model CarRental.Models.CarModel
+
+<div class="container mt-4">
+    <h1>Car Details</h1>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>@Model.Brand @Model.Model (@Model.Year)</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Daily Rate:</strong> @Model.DailyRate.ToString("C")</p>
+            <p><strong>Availability:</strong>
+                @if (Model.IsAvailable)
+                {
+                    <span class="badge bg-success">Available</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Not Available</span>
+                }
+            </p>
+            <a asp-action="Index" class="btn btn-primary">Back to Cars List</a>
+        </div>
+    </div>
+</div>
