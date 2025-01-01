@@ -1,8 +1,66 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<CarRental.Models.CarModel>
+@{
+    ViewData["Title"] = "Car Rental Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <!-- Hero Banner -->
+    <div class="jumbotron text-white text-center"
+        style="background: url('/images/car_banner.jpg') center/cover no-repeat; height: 300px;">
+        <h1 class="display-4">Find Your Perfect Ride</h1>
+        <p class="lead">Rent your dream car today with <span class="text-warning">@ViewBag.Discount</span></p>
+    </div>
+
+    <!-- Cars Section -->
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">Available Cars</h2>
+        <div class="row">
+            @foreach (var car in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        @if (!string.IsNullOrEmpty(car.ImagePath))
+                        {
+                            <img src="@car.ImagePath" alt="Car Image" class="card-img-top img-fluid"
+                                style="height: 200px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-secondary text-center text-white"
+                                style="height: 200px; line-height: 200px;">
+                                No Image Available
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@car.Brand @car.Model</h5>
+                            <p class="card-text"><strong>Year:</strong> @car.Year</p>
+                            <p class="card-text"><strong>Daily Rate:</strong> @car.DailyRate.ToString("C")</p>
+                            <p class="card-text">
+                                <strong>Status:</strong>
+                                @if (car.IsAvailable)
+                                {
+                                    <span class="badge bg-success">Available</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Not Available</span>
+                                }
+                            </p>
+                            <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id"
+                                class="btn btn-primary btn-sm">
+                                Rent Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card bg-warning text-white mt-4">
+        <div class="card-body text-center">
+            <h3>Special Offer!</h3>
+            <p>Book your car today and get <strong>@ViewBag.Discount</strong></p>
+        </div>
+    </div>
 </div>

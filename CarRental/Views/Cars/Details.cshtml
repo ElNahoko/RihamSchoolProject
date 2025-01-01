@@ -1,18 +1,22 @@
 ﻿@model CarRental.Models.CarModel
 
 <div class="container mt-4">
-    <h1>Car Details</h1>
-
-    <div class="card">
-        <div class="card-header">
-            <h2>@Model.Brand @Model.Model (@Model.Year)</h2>
-        </div>
-        <div class="card-body">
+    <div class="row">
+        <div class="col-md-6">
             @if (!string.IsNullOrEmpty(Model.ImagePath))
             {
-                <img src="@Model.ImagePath" alt="Car Image" class="img-fluid mb-3" />
+                <img src="@Model.ImagePath" alt="Car Image" class="img-fluid rounded shadow-sm" />
             }
-            <p><strong>Daily Rate:</strong> @Model.DailyRate.ToString("C")</p>
+            else
+            {
+                <div class="text-center border p-5 rounded shadow-sm">
+                    <p>No image available</p>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <h1>@Model.Brand @Model.Model (@Model.Year)</h1>
+            <h4 class="text-success">Daily Rate: @Model.DailyRate.ToString("C")</h4>
             <p><strong>Availability:</strong>
                 @if (Model.IsAvailable)
                 {
@@ -23,7 +27,34 @@
                     <span class="badge bg-danger">Not Available</span>
                 }
             </p>
-            <a asp-action="Index" class="btn btn-primary">Back to Cars List</a>
+
+            <p><strong>Car Details:</strong></p>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Brand:</strong> @Model.Brand</li>
+                <li class="list-group-item"><strong>Model:</strong> @Model.Model</li>
+                <li class="list-group-item"><strong>Year:</strong> @Model.Year</li>
+                <li class="list-group-item"><strong>Daily Rate:</strong> @Model.DailyRate.ToString("C")</li>
+                <li class="list-group-item">
+                    <strong>Status:</strong>
+                    @if (Model.IsAvailable)
+                    {
+                        <span class="badge bg-success">Available</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Not Available</span>
+                    }
+                </li>
+            </ul>
+
+            <div class="mt-4">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Edit Car
+                </a>
+                <a asp-action="Index" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Cars List
+                </a>
+            </div>
         </div>
     </div>
 </div>

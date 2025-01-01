@@ -20,3 +20,30 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.jumbotron {
+    border-radius: 15px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.btn-sm {
+    margin-right: 5px;
+}
