@@ -21,5 +21,7 @@ namespace CarRental.Models
 
         [Display(Name = "Available for Rent")]
         public bool IsAvailable { get; set; }
+
+        public string? ImagePath { get; set; }
     }
 }

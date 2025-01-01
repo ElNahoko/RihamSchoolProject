@@ -38,16 +38,31 @@ namespace CarRental.Controllers
         // POST: Cars/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CarModel car)
+        public IActionResult Create(CarModel car, IFormFile? imageFile)
         {
             if (ModelState.IsValid)
             {
-                car.Id = _cars.Any() ? _cars.Max(c => c.Id) + 1 : 1; // Assign a new ID
+                if (imageFile is not null)
+                {
+                    string fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        imageFile.CopyTo(stream);
+                    }
+
+                    car.ImagePath = $"/images/{fileName}";
+                }
+
+                car.Id = _cars.Any() ? _cars.Max(c => c.Id) + 1 : 1;
                 _cars.Add(car);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(car);
         }
+
 
         // GET: Cars/Edit/5
         public IActionResult Edit(int id)
@@ -63,17 +78,29 @@ namespace CarRental.Controllers
         // POST: Cars/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, CarModel updatedCar)
+        public IActionResult Edit(int id, CarModel updatedCar, IFormFile? imageFile)
         {
             if (ModelState.IsValid)
             {
                 var car = _cars.FirstOrDefault(c => c.Id == id);
-                if (car == null)
+                if (car is null)
                 {
                     return NotFound();
                 }
 
-                // Update car details
+                if (imageFile is not null)
+                {
+                    string fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        imageFile.CopyTo(stream);
+                    }
+
+                    car.ImagePath = $"/images/{fileName}";
+                }
+
                 car.Brand = updatedCar.Brand;
                 car.Model = updatedCar.Model;
                 car.Year = updatedCar.Year;
@@ -82,6 +109,7 @@ namespace CarRental.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
             return View(updatedCar);
         }
 

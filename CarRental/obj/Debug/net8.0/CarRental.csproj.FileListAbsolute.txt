@@ -166,3 +166,4 @@
 /Users/nahoko/Documents/repos/RihamSchoolProject/CarRental/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Windows.Extensions.dll
 /Users/nahoko/Documents/repos/RihamSchoolProject/CarRental/obj/Debug/net8.0/CarRental.csproj.AssemblyReference.cache
 /Users/nahoko/Documents/repos/RihamSchoolProject/CarRental/obj/Debug/net8.0/CarRental.csproj.Up2Date
+/Users/nahoko/Documents/repos/RihamSchoolProject/CarRental/obj/Debug/net8.0/CarRental.sourcelink.json

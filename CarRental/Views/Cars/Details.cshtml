@@ -8,6 +8,10 @@
             <h2>@Model.Brand @Model.Model (@Model.Year)</h2>
         </div>
         <div class="card-body">
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" alt="Car Image" class="img-fluid mb-3" />
+            }
             <p><strong>Daily Rate:</strong> @Model.DailyRate.ToString("C")</p>
             <p><strong>Availability:</strong>
                 @if (Model.IsAvailable)

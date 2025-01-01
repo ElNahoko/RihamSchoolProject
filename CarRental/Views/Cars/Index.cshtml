@@ -15,6 +15,7 @@
                 <table class="table table-bordered" id="carsTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th>Image</th>
                             <th>Brand</th>
                             <th>Model</th>
                             <th>Year</th>
@@ -27,10 +28,18 @@
                         @foreach (var item in Model)
                             {
                                 <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                                        {
+                                            <img src="@item.ImagePath" alt="Car Image"
+                                                style="width: 100px; height: auto; cursor: pointer;" data-bs-toggle="modal"
+                                                data-bs-target="#carImageModal" data-image="@item.ImagePath" />
+                                        }
+                                    </td>
                                     <td>@item.Brand</td>
                                     <td>@item.Model</td>
                                     <td>@item.Year</td>
-                                    <td>@item.DailyRate</td>
+                                    <td>@item.DailyRate.ToString("C")</td>
                                     <td>
                                         @if (item.IsAvailable)
                                         {
@@ -62,6 +71,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal for Viewing Large Image -->
+    <div class="modal fade" id="carImageModal" tabindex="-1" aria-labelledby="carImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img id="modalCarImage" src="" alt="Car Image" class="img-fluid" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 }
 else
 {
@@ -72,8 +95,15 @@ else
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $('#carsTable').DataTable();
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('carImageModal');
+            const modalImage = document.getElementById('modalCarImage');
+
+            modal.addEventListener('show.bs.modal', (event) => {
+                const button = event.relatedTarget;
+                const imageUrl = button.getAttribute('data-image');
+                modalImage.src = imageUrl;
+            });
         });
     </script>
 }
