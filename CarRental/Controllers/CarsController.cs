@@ -1,31 +1,61 @@
-using CarRental.Models;
 using Microsoft.AspNetCore.Mvc;
+using CarRental.Data;
+using CarRental.Entities;
+using CarRental.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRental.Controllers
 {
     public class CarsController : Controller
     {
-        private static List<CarModel> _cars = new List<CarModel>
+        private readonly CarRentalContext _context;
+
+        public CarsController(CarRentalContext context)
         {
-            new CarModel { Id = 1, Brand = "Toyota", Model = "Corolla", Year = 2019, DailyRate = 50.00m, IsAvailable = true },
-            new CarModel { Id = 2, Brand = "Honda", Model = "Civic", Year = 2020, DailyRate = 60.00m, IsAvailable = true },
-            new CarModel { Id = 3, Brand = "Ford", Model = "Fusion", Year = 2018, DailyRate = 55.00m, IsAvailable = false }
-        };
+            _context = context;
+        }
 
         // GET: Cars/Index
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_cars);
+            var cars = await _context.Cars
+                .Select(car => new CarModel
+                {
+                    Id = car.Id,
+                    Brand = car.Brand,
+                    Model = car.Model,
+                    Year = car.Year,
+                    DailyRate = car.DailyRate,
+                    IsAvailable = car.IsAvailable,
+                    ImagePath = car.ImagePath
+                })
+                .ToListAsync();
+
+            return View(cars);
         }
 
         // GET: Cars/Details/5
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var car = _cars.FirstOrDefault(c => c.Id == id);
+            var car = await _context.Cars
+                .Where(c => c.Id == id)
+                .Select(c => new CarModel
+                {
+                    Id = c.Id,
+                    Brand = c.Brand,
+                    Model = c.Model,
+                    Year = c.Year,
+                    DailyRate = c.DailyRate,
+                    IsAvailable = c.IsAvailable,
+                    ImagePath = c.ImagePath
+                })
+                .FirstOrDefaultAsync();
+
             if (car == null)
             {
                 return NotFound();
             }
+
             return View(car);
         }
 
@@ -38,104 +68,145 @@ namespace CarRental.Controllers
         // POST: Cars/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CarModel car, IFormFile? imageFile)
+        public async Task<IActionResult> Create(CarModel carModel, IFormFile? imageFile)
         {
             if (ModelState.IsValid)
             {
-                if (imageFile is not null)
+                var car = new Car
+                {
+                    Brand = carModel.Brand,
+                    Model = carModel.Model,
+                    Year = carModel.Year,
+                    DailyRate = carModel.DailyRate,
+                    IsAvailable = carModel.IsAvailable
+                };
+
+                if (imageFile != null)
                 {
                     string fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
                     string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        imageFile.CopyTo(stream);
+                        await imageFile.CopyToAsync(stream);
                     }
 
                     car.ImagePath = $"/images/{fileName}";
                 }
 
-                car.Id = _cars.Any() ? _cars.Max(c => c.Id) + 1 : 1;
-                _cars.Add(car);
+                _context.Cars.Add(car);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(car);
+            return View(carModel);
         }
 
-
         // GET: Cars/Edit/5
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var car = _cars.FirstOrDefault(c => c.Id == id);
+            var car = await _context.Cars.FindAsync(id);
             if (car == null)
             {
                 return NotFound();
             }
-            return View(car);
+
+            var carModel = new CarModel
+            {
+                Id = car.Id,
+                Brand = car.Brand,
+                Model = car.Model,
+                Year = car.Year,
+                DailyRate = car.DailyRate,
+                IsAvailable = car.IsAvailable,
+                ImagePath = car.ImagePath
+            };
+
+            return View(carModel);
         }
 
         // POST: Cars/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, CarModel updatedCar, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, CarModel carModel, IFormFile? imageFile)
         {
+            if (id != carModel.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                var car = _cars.FirstOrDefault(c => c.Id == id);
-                if (car is null)
+                var car = await _context.Cars.FindAsync(id);
+                if (car == null)
                 {
                     return NotFound();
                 }
 
-                if (imageFile is not null)
+                car.Brand = carModel.Brand;
+                car.Model = carModel.Model;
+                car.Year = carModel.Year;
+                car.DailyRate = carModel.DailyRate;
+                car.IsAvailable = carModel.IsAvailable;
+
+                if (imageFile != null)
                 {
                     string fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
                     string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        imageFile.CopyTo(stream);
+                        await imageFile.CopyToAsync(stream);
                     }
 
                     car.ImagePath = $"/images/{fileName}";
                 }
 
-                car.Brand = updatedCar.Brand;
-                car.Model = updatedCar.Model;
-                car.Year = updatedCar.Year;
-                car.DailyRate = updatedCar.DailyRate;
-                car.IsAvailable = updatedCar.IsAvailable;
-
+                _context.Update(car);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(updatedCar);
+            return View(carModel);
         }
 
         // GET: Cars/Delete/5
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var car = _cars.FirstOrDefault(c => c.Id == id);
+            var car = await _context.Cars
+                .Where(c => c.Id == id)
+                .Select(c => new CarModel
+                {
+                    Id = c.Id,
+                    Brand = c.Brand,
+                    Model = c.Model,
+                    Year = c.Year,
+                    DailyRate = c.DailyRate,
+                    IsAvailable = c.IsAvailable,
+                    ImagePath = c.ImagePath
+                })
+                .FirstOrDefaultAsync();
+
             if (car == null)
             {
                 return NotFound();
             }
+
             return View(car);
         }
 
         // POST: Cars/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var car = _cars.FirstOrDefault(c => c.Id == id);
+            var car = await _context.Cars.FindAsync(id);
             if (car != null)
             {
-                _cars.Remove(car);
+                _context.Cars.Remove(car);
+                await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

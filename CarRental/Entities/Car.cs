@@ -26,6 +26,8 @@ namespace CarRental.Entities
 
         public bool IsAvailable { get; set; }
 
+        public string ImagePath { get; set; } = string.Empty;
+
         public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }

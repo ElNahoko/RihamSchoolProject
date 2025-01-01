@@ -1,0 +1,38 @@
+﻿@model List<CarRental.Entities.Reservation>
+
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center">Reservations</h1>
+
+    @if (!Model.Any())
+    {
+        <p class="text-center text-muted">No reservations found.</p>
+    }
+    else
+    {
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>Reservation ID</th>
+                    <th>Car</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reservation in Model)
+                {
+                    <tr>
+                        <td>@reservation.Id</td>
+                        <td>@reservation.Car?.Brand @reservation.Car?.Model</td>
+                        <td>@reservation.StartDate.ToShortDateString()</td>
+                        <td>@reservation.EndDate.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

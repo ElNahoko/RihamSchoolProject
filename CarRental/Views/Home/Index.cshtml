@@ -1,27 +1,28 @@
 ﻿@model List<CarRental.Models.CarModel>
 @{
-    ViewData["Title"] = "Car Rental Dashboard";
+    ViewData["Title"] = "Drive Your Dream - Find Your Perfect Ride";
 }
 
 <div class="container-fluid">
-    <!-- Hero Banner -->
-    <div class="jumbotron text-white text-center"
-        style="background: url('/images/car_banner.jpg') center/cover no-repeat; height: 300px;">
-        <h1 class="display-4">Find Your Perfect Ride</h1>
-        <p class="lead">Rent your dream car today with <span class="text-warning">@ViewBag.Discount</span></p>
+    <!-- Hero Section -->
+    <div class="hero-section text-white text-center py-5"
+        style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/images/hero-banner.jpg') center/cover no-repeat; height: 400px;">
+        <h1 class="display-4 fw-bold">Drive Your Dream</h1>
+        <p class="lead">Affordable, convenient, and luxurious car rentals just for you.</p>
+        <a href="#available-cars" class="btn btn-warning btn-lg mt-3">Find Your Car</a>
     </div>
 
-    <!-- Cars Section -->
-    <div class="container mt-4">
-        <h2 class="text-center mb-4">Available Cars</h2>
+    <!-- Available Cars Section -->
+    <div class="container mt-5">
+        <h2 id="available-cars" class="text-center fw-bold mb-4">Available Cars</h2>
         <div class="row">
             @foreach (var car in Model)
             {
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
                         @if (!string.IsNullOrEmpty(car.ImagePath))
                         {
-                            <img src="@car.ImagePath" alt="Car Image" class="card-img-top img-fluid"
+                            <img src="@car.ImagePath" alt="@car.Brand @car.Model" class="card-img-top"
                                 style="height: 200px; object-fit: cover;" />
                         }
                         else
@@ -33,9 +34,9 @@
                         }
                         <div class="card-body">
                             <h5 class="card-title">@car.Brand @car.Model</h5>
-                            <p class="card-text"><strong>Year:</strong> @car.Year</p>
-                            <p class="card-text"><strong>Daily Rate:</strong> @car.DailyRate.ToString("C")</p>
                             <p class="card-text">
+                                <strong>Year:</strong> @car.Year<br />
+                                <strong>Daily Rate:</strong> @car.DailyRate.ToString("C")<br />
                                 <strong>Status:</strong>
                                 @if (car.IsAvailable)
                                 {
@@ -46,8 +47,10 @@
                                     <span class="badge bg-danger">Not Available</span>
                                 }
                             </p>
+                        </div>
+                        <div class="card-footer bg-white text-center">
                             <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id"
-                                class="btn btn-primary btn-sm">
+                                class="btn btn-primary w-100">
                                 Rent Now
                             </a>
                         </div>
@@ -57,10 +60,34 @@
         </div>
     </div>
 
-    <div class="card bg-warning text-white mt-4">
-        <div class="card-body text-center">
-            <h3>Special Offer!</h3>
-            <p>Book your car today and get <strong>@ViewBag.Discount</strong></p>
+    <!-- Why Choose Us Section -->
+    <div class="why-choose-us bg-light py-5 mt-5">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-4">Why Choose Us?</h2>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <span class="material-icons fs-1 text-warning mb-3">attach_money</span>
+                    <h5>Affordable Prices</h5>
+                    <p>Drive your dream car without breaking the bank. Our pricing is transparent and fair.</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="material-icons fs-1 text-primary mb-3">location_on</span>
+                    <h5>Convenience</h5>
+                    <p>With a seamless booking process and flexible pickup options, renting has never been easier.</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="material-icons fs-1 text-success mb-3">directions_car</span>
+                    <h5>Quality Cars</h5>
+                    <p>Choose from a wide variety of top-quality cars, well-maintained and ready to go.</p>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <!-- Special Offers Section -->
+    <div class="special-offer-section bg-warning text-white py-5 mt-5 text-center">
+        <h3>Special Offer</h3>
+        <p class="fs-5">Book today and enjoy <strong>@ViewBag.Discount</strong></p>
+        <a href="#available-cars" class="btn btn-dark">Explore Offers</a>
     </div>
 </div>

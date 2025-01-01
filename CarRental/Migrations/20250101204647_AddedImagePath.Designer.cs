@@ -4,6 +4,7 @@ using CarRental.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRental.Migrations
 {
     [DbContext(typeof(CarRentalContext))]
-    partial class CarRentalContextModelSnapshot : ModelSnapshot
+    [Migration("20250101204647_AddedImagePath")]
+    partial class AddedImagePath
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,38 +103,6 @@ namespace CarRental.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cars");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Brand = "Toyota",
-                            DailyRate = 50.00m,
-                            ImagePath = "/images/toyota_corolla.jpg",
-                            IsAvailable = true,
-                            Model = "Corolla",
-                            Year = 2019
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Brand = "Honda",
-                            DailyRate = 60.00m,
-                            ImagePath = "/images/honda_civic.jpg",
-                            IsAvailable = true,
-                            Model = "Civic",
-                            Year = 2020
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Brand = "Ford",
-                            DailyRate = 55.00m,
-                            ImagePath = "/images/ford_fusion.jpg",
-                            IsAvailable = false,
-                            Model = "Fusion",
-                            Year = 2018
-                        });
                 });
 
             modelBuilder.Entity("CarRental.Entities.Customer", b =>
@@ -168,24 +139,6 @@ namespace CarRental.Migrations
                         .IsUnique();
 
                     b.ToTable("Customers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "",
-                            Email = "john.doe@example.com",
-                            Name = "Jhon Doe",
-                            Phone = ""
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "",
-                            Email = "jane.smith@example.com",
-                            Name = "Jane Smith",
-                            Phone = ""
-                        });
                 });
 
             modelBuilder.Entity("CarRental.Entities.Reservation", b =>
@@ -225,28 +178,6 @@ namespace CarRental.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Reservations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CarId = 1,
-                            CustomerId = 1,
-                            EndDate = new DateTime(2023, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2023, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Confirmed",
-                            TotalCost = 200.00m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CarId = 2,
-                            CustomerId = 2,
-                            EndDate = new DateTime(2023, 11, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2023, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Pending",
-                            TotalCost = 120.00m
-                        });
                 });
 
             modelBuilder.Entity("CarRental.Entities.Reservation", b =>

@@ -48,6 +48,13 @@
             </ul>
 
             <div class="mt-4">
+                @if (Model.IsAvailable)
+                {
+                    <a asp-controller="Reservations" asp-action="Create" asp-route-carId="@Model.Id"
+                        class="btn btn-success">
+                        <i class="fas fa-car"></i> Reserve
+                    </a>
+                }
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
                     <i class="fas fa-edit"></i> Edit Car
                 </a>

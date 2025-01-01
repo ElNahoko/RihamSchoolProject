@@ -1,29 +1,39 @@
 using Microsoft.AspNetCore.Mvc;
+using CarRental.Data;
+using CarRental.Entities;
 using CarRental.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRental.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly CarRentalContext _context;
 
-        // Static list to simulate car data
-        private static List<CarModel> _cars = new List<CarModel>
-        {
-            new CarModel { Id = 1, Brand = "Toyota", Model = "Corolla", Year = 2019, DailyRate = 50.00m, IsAvailable = true, ImagePath = "/images/toyota_corolla.jpg" },
-            new CarModel { Id = 2, Brand = "Honda", Model = "Civic", Year = 2020, DailyRate = 60.00m, IsAvailable = true, ImagePath = "/images/honda_civic.jpg" },
-            new CarModel { Id = 3, Brand = "Ford", Model = "Fusion", Year = 2018, DailyRate = 55.00m, IsAvailable = false, ImagePath = "/images/ford_fusion.jpg" }
-        };
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, CarRentalContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var cars = await _context.Cars
+                .Select(car => new CarModel
+                {
+                    Id = car.Id,
+                    Brand = car.Brand,
+                    Model = car.Model,
+                    Year = car.Year,
+                    DailyRate = car.DailyRate,
+                    IsAvailable = car.IsAvailable,
+                    ImagePath = car.ImagePath
+                })
+                .ToListAsync();
+
             ViewBag.Discount = "20% off on all rentals!";
-            return View(_cars);
+            return View(cars);
         }
     }
 }
